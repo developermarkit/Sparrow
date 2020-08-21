@@ -11,7 +11,7 @@ const firebaseConfig = {
   appId: '1:332525632914:web:11cb7ee286b5eafaf8d54b',
   measurementId: 'G-TJ9M031V6G',
 };
-export const reactNativeApp = firebase.initializeApp(firebaseConfig);
+export const reactNativeApp =()=> firebase.initializeApp(firebaseConfig);
 let app = Firebase.initializeApp(firebaseConfig);
 export const db = app.database();
 export const storage = app.storage();
