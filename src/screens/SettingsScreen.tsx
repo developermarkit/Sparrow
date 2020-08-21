@@ -9,7 +9,6 @@ import {
 import React, {useEffect, useState} from 'react';
 import ExtendedLine from '../components/ExtendedLine';
 import ThemeTextInput from '../components/ThemeTextInput';
-import {db, storage} from '../firebase.config';
 import Colors from '../constants/Colors';
 import {IUser} from '../interfaces/User.interface';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -20,6 +19,7 @@ import {ScreenNames} from '../constants/ScreenNames';
 import {useSelector, useDispatch} from 'react-redux';
 import {setUserDetails} from '../react-redux/actions';
 import ThemeNumberInput from '../components/ThemeNumberInput';
+import storage from '@react-native-firebase/storage';
 import Header from '../components/Header';
 // @ts-ignore
 import CameraIcon from '../assets/camera.svg';
@@ -28,6 +28,7 @@ import CheckIcon from '../assets/checkmark.svg';
 // @ts-ignore
 import CloseIcon from '../assets/close-outline.svg';
 import toast from '../components/toast';
+import database from '@react-native-firebase/database';
 const SettingsScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = React.useState(undefined);
@@ -73,7 +74,7 @@ const SettingsScreen = ({navigation}) => {
     };
     ImagePicker.launchImageLibrary(options, async response => {
       let task;
-      const storageRef = storage.ref().child(sid);
+      const storageRef = storage().ref().child(sid);
       const id = Date.now();
       if (response.uri) {
         fetch(response.uri)
@@ -142,7 +143,7 @@ const SettingsScreen = ({navigation}) => {
         // @ts-ignore
         pin,
       };
-      db.ref('/Users')
+      database().ref('/Users')
         .child(phone)
         .update(user)
         .then(() => {

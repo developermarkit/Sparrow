@@ -19,6 +19,7 @@ import {boldText, heading2} from '../constants/MasterStyles';
 import Header from '../components/Header';
 import {NavigationEvents} from 'react-navigation';
 import {ScreenNames} from '../constants/ScreenNames';
+import database from '@react-native-firebase/database';
 
 const OrdersScreen = ({navigation}) => {
   let o: (IOrder)[] = [];
@@ -45,9 +46,9 @@ const OrdersScreen = ({navigation}) => {
 
   let updateOrders: () => Promise<void>;
   updateOrders = async () => {
-    const orderRef = db.ref('/orders').child(sid);
+    const orderRef = database().ref('/orders').child(sid);
     if (role === EUserRole.USER) {
-      await db
+      await database()
         .ref('/Users')
         .child(phone)
         .child('orders')

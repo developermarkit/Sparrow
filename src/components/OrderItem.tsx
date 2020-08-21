@@ -29,6 +29,7 @@ import {IOrderItem} from '../interfaces/OrderItem.Interface';
 import {useSelector} from 'react-redux';
 import toast from './toast';
 import GenericUtil from '../helpers/genericUtil';
+import database from '@react-native-firebase/database';
 
 interface IOrderItemInput {
   order: Partial<IOrder>;
@@ -38,19 +39,19 @@ interface IOrderItemInput {
 }
 const IncreaseStock = (orderItems: IOrderItem[]) => {
   for (const orderItem of orderItems) {
-    db.ref('/products')
+    database().ref('/products')
       .child(orderItem.pid)
       .child('stock')
       .once('value', snapshot => {
         let quantity = snapshot.val() + orderItem.quantity;
-        db.ref('/products')
+        database().ref('/products')
           .child(orderItem.pid)
           .child('status')
           .set(EProductStatus.AVAILABLE)
           .then(() => {
             console.log('product status changed');
           });
-        db.ref('/products')
+        database().ref('/products')
           .child(orderItem.pid)
           .child('stock')
           .set(quantity)
@@ -90,7 +91,7 @@ const OrderItem = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const orderStatusFromDB = () => {
     let orderstatus = '';
-    db.ref('/orders')
+    database().ref('/orders')
       .child(Shop.sid)
       .child(order.orderNumber)
       .once('value', async snap => {
@@ -110,7 +111,7 @@ const OrderItem = ({
           <ThemeButton
             title="Cancel this Order"
             onPress={() => {
-              db.ref('/orders')
+              database().ref('/orders')
                 .child(sid)
                 .child(order.orderNumber)
                 .child('orderSTATUS')
@@ -129,7 +130,7 @@ const OrderItem = ({
             <ThemeButtonGreen
               title="Accept"
               onPress={() => {
-                db.ref('/orders')
+                database().ref('/orders')
                   .child(sid)
                   .child(order.orderNumber)
                   .child('orderSTATUS')
@@ -144,7 +145,7 @@ const OrderItem = ({
             <ThemeButtonRed
               title="Reject"
               onPress={() => {
-                db.ref('/orders')
+                database().ref('/orders')
                   .child(sid)
                   .child(order.orderNumber)
                   .child('orderSTATUS')
@@ -166,7 +167,7 @@ const OrderItem = ({
           <ThemeButton
             title="Out for Delivery"
             onPress={() => {
-              db.ref('/orders')
+              database().ref('/orders')
                 .child(sid)
                 .child(order.orderNumber)
                 .child('orderSTATUS')
@@ -186,7 +187,7 @@ const OrderItem = ({
           <ThemeButton
             title="Complete Order"
             onPress={() => {
-              db.ref('/orders')
+              database().ref('/orders')
                 .child(sid)
                 .child(order.orderNumber)
                 .child('orderSTATUS')

@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux';
 import Header from '../components/Header';
 import {NavigationEvents} from 'react-navigation';
 import {ScreenNames} from '../constants/ScreenNames';
+import database from '@react-native-firebase/database';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
@@ -36,7 +37,7 @@ const CategoryScreen = ({navigation}) => {
   };
   const setCategories = () => {
     if (sid) {
-      const categoryRef = db.ref('/categories').child(sid);
+      const categoryRef = database().ref('/categories').child(sid);
       categoryRef
         .once('value', async snapshot => {
           let snap = await snapshot.val();

@@ -27,7 +27,7 @@ import {useSelector} from 'react-redux';
 // @ts-ignore
 import PencilIcon from '../assets/pencil.svg';
 import {IOrderItem} from '../interfaces/OrderItem.Interface';
-
+import database from '@react-native-firebase/database';
 const CheckoutScreen = ({navigation, route}) => {
   const [modeOfPayment, setModeOfPayment] = useState(EModeOfPayment.CASH);
   const [address, setAddress] = useState('');
@@ -48,13 +48,13 @@ const CheckoutScreen = ({navigation, route}) => {
   ];
   const decreaseStock = (orderItems: IOrderItem[]) => {
     for (const orderItem of orderItems) {
-      db.ref('/products')
+      database().ref('/products')
         .child(orderItem.pid)
         .child('stock')
         .once('value', snapshot => {
           let quantity = snapshot.val() - orderItem.quantity;
           if (quantity === 0) {
-            db.ref('/products')
+            database().ref('/products')
               .child(orderItem.pid)
               .child('status')
               .set(EProductStatus.OUT_OF_STOCK)
@@ -62,7 +62,7 @@ const CheckoutScreen = ({navigation, route}) => {
                 console.log('product status changed');
               });
           }
-          db.ref('/products')
+          database().ref('/products')
             .child(orderItem.pid)
             .child('stock')
             .set(quantity)
@@ -86,7 +86,7 @@ const CheckoutScreen = ({navigation, route}) => {
     order.modeOfPayment = modeOfPayment;
     order.orderSTATUS = EOrderStatus.PENDING;
 
-    db.ref('/Users')
+    database().ref('/Users')
       .child(order.userPhone)
       .child('orders')
       .child(order.sid)
@@ -95,12 +95,12 @@ const CheckoutScreen = ({navigation, route}) => {
       .set(order.orderSTATUS)
       .then(() => {
         setLoader(false);
-        db.ref('/orders')
+        database().ref('/orders')
           .child(order.sid)
           .child(order.orderNumber)
           .update(order)
           .then(() => {
-            db.ref('/cart')
+            database().ref('/cart')
               .child(phone)
               .child(order.sid)
               .remove()

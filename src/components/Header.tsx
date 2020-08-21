@@ -17,6 +17,7 @@ import {db} from '../firebase.config';
 import {IOrder} from '../interfaces/Order.interface';
 import {ICart} from '../interfaces/Cart.interface';
 import {NavigationEvents} from 'react-navigation';
+import database from '@react-native-firebase/database';
 
 interface IHeader {
   title: string;
@@ -45,7 +46,7 @@ const Header = (props: IHeader) => {
   const getCartCount = (phone, sid) => {
     let c = 0;
     if (phone && sid) {
-      const cartRef = db
+      const cartRef = database()
         .ref('/cart')
         .child(phone)
         .child(sid);
@@ -68,7 +69,7 @@ const Header = (props: IHeader) => {
   const orderCount = (phone, sid) => {
     let c = 0;
     if (phone && sid) {
-      const orderRef = db.ref('/orders').child(sid);
+      const orderRef = database().ref('/orders').child(sid);
       orderRef
         .once('value', snapshot => {
           if (snapshot && snapshot.val()) {

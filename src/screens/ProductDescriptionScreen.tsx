@@ -23,6 +23,7 @@ import Header from '../components/Header';
 import ExtendedLine from '../components/ExtendedLine';
 import GenericUtil from '../helpers/genericUtil';
 import toast from '../components/toast';
+import database from '@react-native-firebase/database';
 // @ts-ignore
 import WhatsAppIcon from '../assets/whatsapp.svg';
 // @ts-ignore
@@ -44,7 +45,7 @@ const ProductDescriptionScreen = ({navigation, route}) => {
   const [now, setNow] = useState(Date.now());
   console.log('product description: ', pid);
   const fetchProduct = async () => {
-    const orderRef = db.ref('/products').child(pid);
+    const orderRef = database().ref('/products').child(pid);
     orderRef
       .once('value', async snapshot => {
         let snap = await snapshot.val();
@@ -77,7 +78,7 @@ const ProductDescriptionScreen = ({navigation, route}) => {
         }
       }
     };
-    db.ref('/cart')
+    database().ref('/cart')
       .child(phone)
       .child(sid)
       // @ts-ignore

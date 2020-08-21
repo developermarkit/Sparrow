@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Platform} from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import auth from '@react-native-firebase/auth';
 import React, {useEffect, useState} from 'react';
+import database from '@react-native-firebase/database';
 import ThemeButton from '../components/ThemeButton';
 import {boldText, heading2} from '../constants/MasterStyles';
 import ExtendedLine from '../components/ExtendedLine';
@@ -40,7 +41,7 @@ const UserLoginScreen = ({navigation}) => {
       Platform.OS !== 'ios' ? auth().currentUser.phoneNumber : `+91${value}`;
     // todo remove this later
 
-    const ref = db.ref(`/Users/${phoneNumber}`);
+    const ref = database().ref(`/Users/${phoneNumber}`);
     ref.once('value').then(snapshot => {
       const User: Partial<IUser> = {
         name: snapshot.child('name').val(),

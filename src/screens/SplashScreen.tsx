@@ -1,6 +1,7 @@
 import * as Strings from '../constants/Strings';
 import * as Dimensions from '../constants/Dimensions';
 import React from 'react';
+import database from '@react-native-firebase/database';
 import {AsyncStorage, StyleSheet, Text, View, Platform} from 'react-native';
 import Colors from '../constants/Colors';
 import * as MasterStyles from '../constants/MasterStyles';
@@ -25,7 +26,7 @@ const SplashScreen = ({navigation}) => {
   const dispatch = useDispatch();
   console.log('::::::::::::::SplashScreen:::::::::::::::::');
   const checkShopData = async sid => {
-    const shopRef = db.ref(`/shops/${sid}`);
+    const shopRef = database().ref(`/shops/${sid}`);
     shopRef.once('value').then(async snapshot => {
       const Shop: IShop = {
         sid: sid,
@@ -63,7 +64,7 @@ const SplashScreen = ({navigation}) => {
       Platform.OS !== 'ios' ? auth().currentUser.phoneNumber : '+919891192474';
     console.log(phoneNumber);
     dispatch(setPhone(phoneNumber));
-    const ref = db.ref(`/Users/${phoneNumber}`);
+    const ref = database().ref(`/Users/${phoneNumber}`);
     ref.once('value').then(async snapshot => {
       const User: Partial<IUser> = {
         name: await snapshot.child('name').val(),
@@ -115,43 +116,46 @@ const SplashScreen = ({navigation}) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.appLogo}>
-        <AppLogo height={'100%'} width={'100%'} fill={Colors.accentColor} />
+    // <View style={styles.container}>
+    //   <View style={styles.appLogo}>
+    //     <AppLogo height={'100%'} width={'100%'} fill={Colors.accentColor} />
+    //   </View>
+    //   <Text style={styles.title}>{Strings.AppStrings.AppName}</Text>
+    //   {/*// @ts-ignore*/}
+    //   <Text style={styles.subTitle}>{Strings.AppStrings.SubTitle}</Text>
+    // </View>
+    <View>
+      <Text>This is SplashScreen</Text>
       </View>
-      <Text style={styles.title}>{Strings.AppStrings.AppName}</Text>
-      {/*// @ts-ignore*/}
-      <Text style={styles.subTitle}>{Strings.AppStrings.SubTitle}</Text>
-    </View>
   );
 };
 
 export default SplashScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-  },
-  appLogo: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: Dimensions.SplashScreenDimensions.logoHeight,
-    width: Dimensions.SplashScreenDimensions.logoWidth,
-    resizeMode: 'stretch',
-    margin: 20,
-  },
-  title: {
-    ...MasterStyles.heading1,
-    justifyContent: 'center',
-    color: Colors.primaryColorDark,
-  },
-  subTitle: {
-    ...MasterStyles.subHeading,
-    ...MasterStyles.italicsText,
-    justifyContent: 'center',
-    color: Colors.primaryColor,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     height: '100%',
+//   },
+//   appLogo: {
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     height: Dimensions.SplashScreenDimensions.logoHeight,
+//     width: Dimensions.SplashScreenDimensions.logoWidth,
+//     resizeMode: 'stretch',
+//     margin: 20,
+//   },
+//   title: {
+//     ...MasterStyles.heading1,
+//     justifyContent: 'center',
+//     color: Colors.primaryColorDark,
+//   },
+//   subTitle: {
+//     ...MasterStyles.subHeading,
+//     ...MasterStyles.italicsText,
+//     justifyContent: 'center',
+//     color: Colors.primaryColor,
+//   },
+// });

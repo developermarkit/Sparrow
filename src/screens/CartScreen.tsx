@@ -16,6 +16,7 @@ import {IOrderItem} from '../interfaces/OrderItem.Interface';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import {useSelector} from 'react-redux';
 import Header from '../components/Header';
+import database from '@react-native-firebase/database';
 import {NavigationEvents} from 'react-navigation';
 
 const CartScreen = ({navigation}) => {
@@ -42,11 +43,11 @@ const CartScreen = ({navigation}) => {
   };
 
   const loadItems = async (id?: string, phone?: string) => {
-    const cartRef = db
+    const cartRef = database()
       .ref('/cart')
       .child(phone)
       .child(id);
-    const productRef = db.ref('/products');
+    const productRef = database().ref('/products');
 
     await cartRef.once('value', async snapshot => {
       const items = snapshot.val();

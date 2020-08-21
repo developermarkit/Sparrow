@@ -12,6 +12,7 @@ import {ScreenNames} from '../constants/ScreenNames';
 import {db} from '../firebase.config';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import toast from './toast';
+import database from '@react-native-firebase/database';
 
 const ProductEditBar = ({navigation, product, refreshProducts}) => {
   const [isEnabled, setIsEnabled] = useState(
@@ -24,7 +25,7 @@ const ProductEditBar = ({navigation, product, refreshProducts}) => {
     });
   };
   const onProductDelete = () => {
-    db.ref('/products')
+    database().ref('/products')
       .child(product.pid)
       .remove()
       .then(() => {
@@ -42,7 +43,7 @@ const ProductEditBar = ({navigation, product, refreshProducts}) => {
       toast('Cannot change the status of a product whose stock is ZERO');
     } else {
       refreshProducts();
-      db.ref('/products')
+      database().ref('/products')
         .child(product.pid)
         .update({
           status: isEnabled
@@ -50,7 +51,7 @@ const ProductEditBar = ({navigation, product, refreshProducts}) => {
             : EProductStatus.AVAILABLE,
         })
         .then(() => {
-          db.ref('/products')
+          database().ref('/products')
             .child(product.pid)
             .update({
               isAvailable: isEnabled ? false : true,

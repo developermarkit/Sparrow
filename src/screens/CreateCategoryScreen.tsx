@@ -3,7 +3,7 @@ import Colors from '../constants/Colors';
 import ExtendedLine from '../components/ExtendedLine';
 import ThemeButton from '../components/ThemeButton';
 import React, {useEffect, useState} from 'react';
-import {db, storage} from '../firebase.config';
+import database from '@react-native-firebase/database';
 import {ICategory} from '../interfaces/Category.interface';
 import ThemeTextInput from '../components/ThemeTextInput';
 import * as MasterStyles from '../constants/MasterStyles';
@@ -12,6 +12,7 @@ import ThemeButtonGray from '../components/ThemeButtonGray';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import {useSelector} from 'react-redux';
 import Header from '../components/Header';
+import storage from '@react-native-firebase/storage';
 
 const CreateCategoryScreen = ({navigation, route}) => {
   const [value, onChangeText] = React.useState('');
@@ -51,7 +52,7 @@ const CreateCategoryScreen = ({navigation, route}) => {
     };
     ImagePicker.launchImageLibrary(options, async response => {
       let task;
-      const storageRef = storage.ref().child(sid);
+      const storageRef = storage().ref().child(sid);
       const name = Date.now();
       if (response.uri) {
         fetch(response.uri)
@@ -115,7 +116,7 @@ const CreateCategoryScreen = ({navigation, route}) => {
     } else {
       setLoader(true);
       const cid = categoryId || `${Date.now()}`;
-      const categoryRef = db.ref('/categories').child(sid);
+      const categoryRef = database().ref('/categories').child(sid);
 
       category = {
         cid,

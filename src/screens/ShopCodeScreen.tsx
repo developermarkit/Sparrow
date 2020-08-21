@@ -6,6 +6,7 @@ import {
   View,
   Keyboard,
 } from 'react-native';
+import database from '@react-native-firebase/database';
 import React, {useState, useEffect} from 'react';
 import ThemeButton from '../components/ThemeButton';
 import ThemeTextInput from '../components/ThemeTextInput';
@@ -79,7 +80,7 @@ const ShopCodeScreen = ({navigation}) => {
         );
       }
       //setLoader(true);
-      db.ref('/shops')
+      database().ref('/shops')
         .child(value.toUpperCase())
         .once('value', snap => {
           const shop = snap.val();
@@ -89,7 +90,7 @@ const ShopCodeScreen = ({navigation}) => {
           } else {
             setInvalidCode(false);
             if (isAdmin) {
-              db.ref('/Users')
+              database().ref('/Users')
                 .child(phoneNumber)
                 .child('shops')
                 .once('value', shopSnap => {

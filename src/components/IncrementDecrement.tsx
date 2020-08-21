@@ -13,6 +13,7 @@ import MinusIcon from '../assets/minus.svg';
 import DeleteIcon from '../assets/delete.svg';
 import {EProductStatus} from '../constants/Enums';
 import toast from './toast';
+import database from '@react-native-firebase/database';
 
 export const updateCartItem = async (
   phone: string,
@@ -22,7 +23,7 @@ export const updateCartItem = async (
   isCartScreen: boolean,
   refreshCart: any,
 ) => {
-  const cartRef = db
+  const cartRef = database()
     .ref('/cart')
     .child(phone)
     .child(sid);
@@ -46,7 +47,7 @@ const IncrementDecrement = ({
   refreshCart,
 }) => {
   const [quantity, setQuantity] = useState(0);
-  const cartRef = db
+  const cartRef = database()
     .ref('/cart')
     .child(phone)
     .child(sid);

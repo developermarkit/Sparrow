@@ -22,7 +22,6 @@ import {
   EShopStatus,
 } from '../constants/Enums';
 import {IShop} from '../interfaces/Shop.Interface';
-import {db, storage} from '../firebase.config';
 import {ScreenNames} from '../constants/ScreenNames';
 import ImagePicker from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
@@ -33,6 +32,8 @@ import {boldText} from '../constants/MasterStyles';
 import {ICategory} from '../interfaces/Category.interface';
 import ThemeButtonGrayDisabled from '../components/ThemeButtonGrayDisabled';
 import ThemeButton from '../components/ThemeButton';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 const SellerSignupScreen = ({navigation}) => {
   const user = useSelector(state => state.userDetails);
@@ -85,7 +86,7 @@ const SellerSignupScreen = ({navigation}) => {
       return false;
     }
 
-    const shop = db.ref('/shops').child(id);
+    const shop = database().ref('/shops').child(id);
     let validity = false;
     setLoader(true);
     await shop.once('value', s => {
@@ -111,7 +112,7 @@ const SellerSignupScreen = ({navigation}) => {
     };
     ImagePicker.launchImageLibrary(options, async response => {
       let task;
-      const storageRef = storage.ref();
+      const storageRef = storage().ref();
       const id = Date.now();
       if (response.uri) {
         fetch(response.uri)
@@ -199,11 +200,11 @@ const SellerSignupScreen = ({navigation}) => {
             isSingleCategoryShop,
           };
           setLoader(true);
-          db.ref('/shops')
+          database().ref('/shops')
             .child(sid.toUpperCase())
             .update(shop)
             .then(() => {
-              db.ref('/Users')
+              database().ref('/Users')
                 .child(phoneNumber)
                 .child('shops')
                 .child(sid.toUpperCase())
@@ -216,7 +217,7 @@ const SellerSignupScreen = ({navigation}) => {
                       name: name,
                       pids: [],
                     };
-                    db.ref('/categories')
+                    database().ref('/categories')
                       .child(sid.toUpperCase())
                       .child(category.cid)
                       .update(category);

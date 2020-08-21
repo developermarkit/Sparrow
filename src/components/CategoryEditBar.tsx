@@ -3,10 +3,10 @@ import React from 'react';
 import Colors from '../constants/Colors';
 // @ts-ignore
 import PencilIcon from '../assets/pencil.svg';
+import database from '@react-native-firebase/database';
 // @ts-ignore
 import DeleteIcon from '../assets/delete.svg';
 import {ScreenNames} from '../constants/ScreenNames';
-import {db} from '../firebase.config';
 import {useSelector} from 'react-redux';
 import ConfirmDialog from '../utils/ConfirmDialog';
 
@@ -23,7 +23,7 @@ const CategoryEditBar = ({navigation, category, refreshCategories}) => {
   const onCategoryDelete = async () => {
     for (const key in category.pids) {
       console.log(`${category.pids[key]}`);
-      db.ref('/products')
+      database().ref('/products')
         .child(category.pids[key])
         .remove()
         .then(() => {
@@ -33,7 +33,7 @@ const CategoryEditBar = ({navigation, category, refreshCategories}) => {
           alert('Unable to delete the Product at the moment,try again later.');
         });
     }
-    await db
+    await database()
       .ref(`/categories/${sid}`)
       .child(category.cid)
       .remove()

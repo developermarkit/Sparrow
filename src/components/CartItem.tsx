@@ -6,6 +6,7 @@ import IncrementDecrement from './IncrementDecrement';
 import {boldText} from '../constants/MasterStyles';
 // @ts-ignore
 import CloseIcon from '../assets/close.svg';
+import database from '@react-native-firebase/database';
 import {ScreenNames} from '../constants/ScreenNames';
 import {db} from '../firebase.config';
 import ConfirmDialog from '../utils/ConfirmDialog';
@@ -13,7 +14,7 @@ import GenericUtil from '../helpers/genericUtil';
 
 const CartItem = ({navigation, cartItem, phone, sid, refreshCart}) => {
   const onDelete = () => {
-    const cartRef = db
+    const cartRef = database()
       .ref('/cart')
       .child(phone)
       .child(sid);

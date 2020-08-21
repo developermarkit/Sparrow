@@ -12,10 +12,11 @@ import {useSelector} from 'react-redux';
 import {NavigationEvents} from 'react-navigation';
 import Header from '../components/Header';
 import {ScreenNames} from '../constants/ScreenNames';
+import database from '@react-native-firebase/database';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ProductScreen = ({navigation, route}) => {
-  const productsRef = db.ref('/products');
+  const productsRef = database().ref('/products');
 
   let products: (IProduct | {isNew: boolean})[] = [];
   const category =

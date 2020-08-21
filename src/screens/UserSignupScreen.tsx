@@ -7,11 +7,12 @@ import {
   Image,
 } from 'react-native';
 import React, {useState} from 'react';
+import database from '@react-native-firebase/database';
 import ExtendedLine from '../components/ExtendedLine';
 import ThemeTextInput from '../components/ThemeTextInput';
 import Colors from '../constants/Colors';
 import ImagePicker from 'react-native-image-picker';
-import {db, storage} from '../firebase.config';
+import storage from '@react-native-firebase/storage';
 // import {sid} from '../App';
 import {IUser} from '../interfaces/User.Interface';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -58,7 +59,7 @@ const UserSignupScreen = ({navigation}) => {
         role,
       };
 
-      db.ref('/Users')
+      database().ref('/Users')
         .child(phoneNumber)
         .update(user)
         .then(() => {
@@ -78,7 +79,7 @@ const UserSignupScreen = ({navigation}) => {
     };
     ImagePicker.launchImageLibrary(options, async response => {
       let task;
-      const storageRef = storage.ref().child(sid);
+      const storageRef = storage().ref().child(sid);
       const name = Date.now();
       if (response.uri) {
         fetch(response.uri)

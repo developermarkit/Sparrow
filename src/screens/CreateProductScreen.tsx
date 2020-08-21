@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import Colors from '../constants/Colors';
 import ExtendedLine from '../components/ExtendedLine';
 import ThemeButton from '../components/ThemeButton';
-import {db, storage} from '../firebase.config';
+import {db} from '../firebase.config';
 import {EProductStatus} from '../constants/Enums';
 import {IProduct} from '../interfaces/Product.interface';
 import ThemeTextInput from '../components/ThemeTextInput';
@@ -16,6 +16,8 @@ import ThemeNumberInput from '../components/ThemeNumberInput';
 import Header from '../components/Header';
 import {ScreenNames} from '../constants/ScreenNames';
 import toast from '../components/toast';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 const CreateProductScreen = ({navigation, route}) => {
   const sid = useSelector(state => state.sid);
@@ -61,68 +63,68 @@ const CreateProductScreen = ({navigation, route}) => {
   }, [navigation]);
 
   let onSelectImage = () => {
-    setLoader(true);
-    const options = {
-      noData: true,
-      maxWidth: 500,
-      maxHeight: 500,
-      aspectRatio: 1,
-    };
-    ImagePicker.launchImageLibrary(options, async response => {
-      let task;
-      const storageRef = storage.ref().child(sid);
-      const name = Date.now();
-      if (response.uri) {
-        fetch(response.uri)
-          .then(res => res.blob())
-          .then(async blob => {
-            setLoader(true);
-            task = storageRef
-              .child(`/Product Images/${name}.jpg`)
-              .put(blob)
-              .then(snapshot => {
-                console.log(
-                  snapshot.bytesTransferred,
-                  '/',
-                  snapshot.totalBytes,
-                  snapshot.bytesTransferred / snapshot.totalBytes,
-                );
-                storageRef
-                  .child(`/Product Images/${name}.jpg`)
-                  .getDownloadURL()
-                  .then(url => {
-                    setImageUrl(url);
-                    setLoader(false);
-                    setPercent(-1);
-                  })
-                  .catch(() => {
-                    storageRef
-                      .child(`/Product Images/${name}_200x200.jpg`)
-                      .getDownloadURL()
-                      .then(url => {
-                        setImageUrl(url);
-                        setLoader(false);
-                        setPercent(-1);
-                      });
-                  });
-              })
-              .catch(error => {
-                if (error) {
-                  alert("Can't pick the Image at the moment, Try again Later");
-                }
-              });
+    // setLoader(true);
+    // const options = {
+    //   noData: true,
+    //   maxWidth: 500,
+    //   maxHeight: 500,
+    //   aspectRatio: 1,
+    // };
+    // ImagePicker.launchImageLibrary(options, async response => {
+    //   let task;
+    //   const storageRef = storage().ref().child(sid);
+    //   const name = Date.now();
+    //   if (response.uri) {
+    //     fetch(response.uri)
+    //       .then(res => res.blob())
+    //       .then(async blob => {
+    //         setLoader(true);
+    //         task = storageRef
+    //           .child(`/Product Images/${name}.jpg`)
+    //           .put(blob)
+    //           .then(snapshot => {
+    //             console.log(
+    //               snapshot.bytesTransferred,
+    //               '/',
+    //               snapshot.totalBytes,
+    //               snapshot.bytesTransferred / snapshot.totalBytes,
+    //             );
+    //             storageRef
+    //               .child(`/Product Images/${name}.jpg`)
+    //               .getDownloadURL()
+    //               .then(url => {
+    //                 setImageUrl(url);
+    //                 setLoader(false);
+    //                 setPercent(-1);
+    //               })
+    //               .catch(() => {
+    //                 storageRef
+    //                   .child(`/Product Images/${name}_200x200.jpg`)
+    //                   .getDownloadURL()
+    //                   .then(url => {
+    //                     setImageUrl(url);
+    //                     setLoader(false);
+    //                     setPercent(-1);
+    //                   });
+    //               });
+    //           })
+    //           .catch(error => {
+    //             if (error) {
+    //               alert("Can't pick the Image at the moment, Try again Later");
+    //             }
+    //           });
 
-            task.on('state_changed', snapshot => {
-              setPercent(
-                Math.round(
-                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-                ),
-              );
-            });
-          });
-      }
-      setLoader(false);
-    });
+    //         task.on('state_changed', snapshot => {
+    //           setPercent(
+    //             Math.round(
+    //               (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+    //             ),
+    //           );
+    //         });
+    //       });
+    //   }
+    //   setLoader(false);
+    // });
   };
 
   let category =
@@ -141,9 +143,9 @@ const CreateProductScreen = ({navigation, route}) => {
       alert('Please Enter all the Details');
     } else {
       setLoader(true);
-      const productRef = db.ref('/products');
+      const productRef = database().ref('/products');
       const categoryPids = category
-        ? db
+        ? database()
             .ref('/categories')
             .child(sid)
             .child(category)
